@@ -120,6 +120,14 @@ html, body { margin: 0; height: 100%; overflow: hidden; color: var(--ink);
 .list-titlebar { display: flex; justify-content: space-between; align-items: center; }
 .list-title { font-size: 24px; letter-spacing: 2px; color: #241a0f; text-shadow: 1px 1px 0 var(--stone-lt); }
 #list-close { border: none; background: none; font-size: 26px; color: #241a0f; cursor: pointer; font-family: var(--pix); line-height: 1; }
+#list-search {
+  width: 100%; margin-top: 8px; font-family: var(--pix); font-size: 18px; letter-spacing: 1px;
+  color: var(--ink); background: var(--panel-lt); padding: 4px 9px;
+  border: 2px solid; border-color: var(--stone-dk) var(--panel-lt) var(--panel-lt) var(--stone-dk);
+  border-radius: 0; outline: none; -webkit-appearance: none;
+}
+#list-search::placeholder { color: var(--ink2); opacity: 0.8; }
+.lnone { padding: 20px 14px; font-size: 18px; color: var(--ink2); font-style: italic; }
 .sort { display: flex; align-items: center; gap: 6px; margin-top: 7px; }
 .sort-lbl { font-size: 16px; color: #2a2016; }
 .sort button {

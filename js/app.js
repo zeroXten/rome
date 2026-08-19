@@ -254,8 +254,14 @@
   const listSub = document.getElementById("list-sub");
   const sortDistBtn = document.getElementById("sort-dist");
   const sortYearBtn = document.getElementById("sort-year");
+  const searchInput = document.getElementById("list-search");
   const SHORT = { standing: "Standing", ruin: "Ruins", gone: "Vanished" };
   let sortMode = "year";
+  let searchQ = "";
+
+  // normalise for forgiving search: lowercase, strip accents & punctuation
+  const norm = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/['’`]/g, "").replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
 
   function parseYear(m) {
     const d = m.date; let x;
@@ -267,7 +273,7 @@
     if ((x = /(\d+)(?:st|nd|rd|th)\s*c\./i.exec(d))) return parseInt(x[1]) * 100 - 50;
     return ERAS[m.era - 1].start;
   }
-  MONUMENTS.forEach((m) => { m._year = parseYear(m); });
+  MONUMENTS.forEach((m) => { m._year = parseYear(m); m._hay = norm(m.name + " " + m.date + " " + m.blurb); });
 
   function siteLatLng(m) { // catacombs marker sits at the map edge; use the real spot for distance
     if (m.gmap) { const p = m.gmap.split(","); return L.latLng(+p[0], +p[1]); }
@@ -291,16 +297,27 @@
   });
 
   function renderList() {
-    const arr = MONUMENTS.map((m, i) => ({ m, el: rowEls[i], d: distMeters(m) }));
+    let arr = MONUMENTS.map((m, i) => ({ m, el: rowEls[i], d: distMeters(m) }));
+    if (searchQ) {
+      const toks = searchQ.split(" ").filter(Boolean);
+      arr = arr.filter(({ m }) => toks.every((t) => m._hay.indexOf(t) !== -1));
+    }
     if (sortMode === "dist" && userPos) arr.sort((a, b) => a.d - b.d);
     else arr.sort((a, b) => a.m._year - b.m._year);
     listRows.innerHTML = "";
-    arr.forEach(({ el, d }) => { el.querySelector(".ldist").textContent = fmtDist(d); listRows.appendChild(el); });
+    if (!arr.length) {
+      listRows.innerHTML = '<div class="lnone">No sites match your search.</div>';
+    } else {
+      arr.forEach(({ el, d }) => { el.querySelector(".ldist").textContent = fmtDist(d); listRows.appendChild(el); });
+    }
     sortDistBtn.classList.toggle("on", sortMode === "dist");
     sortYearBtn.classList.toggle("on", sortMode === "year");
     sortDistBtn.disabled = !userPos;
-    listSub.textContent = userPos ? "sorted by distance from you" : (sortMode === "year" ? "sorted oldest → newest" : "");
+    listSub.textContent = searchQ
+      ? `${arr.length} match${arr.length === 1 ? "" : "es"}`
+      : (userPos ? "sorted by distance from you" : "sorted oldest → newest");
   }
+  searchInput.addEventListener("input", () => { searchQ = norm(searchInput.value); renderList(); });
   function refreshListDistances() { if (listPanel.classList.contains("open")) renderList(); }
 
   function openList() {
