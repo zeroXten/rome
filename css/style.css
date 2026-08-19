@@ -151,6 +151,9 @@ input#time::-moz-range-thumb {
   box-shadow: var(--shadow); border-radius: 6px;
 }
 .mon-tip::before { display: none; }
+/* never show a hover tooltip while a popup is open (prevents the tooltip being
+   stranded under the popup, especially where a tap fires both) */
+.leaflet-map-pane:has(.leaflet-popup) .leaflet-tooltip { display: none !important; }
 
 .rome-popup .leaflet-popup-content-wrapper {
   background: var(--panel); border: 1px solid rgba(74, 56, 38, 0.3);

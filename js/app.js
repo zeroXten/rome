@@ -38,9 +38,13 @@
   // t runs 0..9 across the nine era-bands. Element with data-appear=E is
   // fully in when t reaches E-1; data-out=O means fully gone when t reaches O-1.
   function opacityFor(appear, out, t) {
+    // Fully solid from the start of its own era band; cross-fades in only over the
+    // last ~0.45 of the previous band, so mid-era views stay crisp (no faint bleed
+    // of next-era monuments).
+    const W = 0.45;
     const inEnd = appear - 1;
-    let op = clamp((t - (inEnd - 0.7)) / 0.7, 0, 1);
-    if (out != null) op *= clamp((out - 1 - t) / 0.6, 0, 1);
+    let op = clamp((t - (inEnd - W)) / W, 0, 1);
+    if (out != null) op *= clamp((out - 1 - t) / W, 0, 1);
     return op;
   }
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -52,6 +56,11 @@
     ruin:     { badge: "Ruins you can visit",            icon: "🏺", ghost: 1 },
     gone:     { badge: "Vanished — known from history",  icon: "✦",  ghost: 0.5 },
   };
+
+  // Hover tooltips only make sense with a hover-capable pointer (desktop). On
+  // touch, a tap would fire both the tooltip and the popup, leaving the tooltip
+  // stranded under the popup — so we skip binding tooltips there.
+  const canHover = !!(window.matchMedia && window.matchMedia("(hover: hover)").matches);
 
   const markers = MONUMENTS.map((m) => {
     const st = STATUS[m.status] || STATUS.standing;
@@ -68,7 +77,7 @@
       riseOnHover: true,
       keyboard: false,
     });
-    marker.bindTooltip(m.name, { direction: "top", className: "mon-tip" });
+    if (canHover) marker.bindTooltip(m.name, { direction: "top", className: "mon-tip" });
     marker.bindPopup(
       `<div class="pop">
          <h3>${m.name}</h3>
