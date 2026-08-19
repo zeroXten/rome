@@ -215,22 +215,45 @@
   const S = {
     village:(x)=>{[[GX-6,GY-2],[GX,GY-4],[GX+5,GY-1]].forEach(([a,b])=>{triUp(x,a,b,7,4,C.roof);px(x,a-3,b,7,3,C.marS);});},
     temple:(x)=>{px(x,GX-9,GY-1,18,3,C.marS);for(let i=0;i<6;i++)px(x,GX-8+i*3,GY-10,2,9,C.mar);px(x,GX-8,GY-11,17,2,C.marS);triUp(x,GX,GY-11,20,7,C.roof);px(x,GX-9,GY-11,18,1,C.roofD);},
-    amphi:(x)=>{ellF(x,GX,GY-5,12,7,C.stM);ellF(x,GX,GY-5,12,7,C.st);ellF(x,GX,GY-5,8,4,C.stD);for(let ring=0;ring<2;ring++){const rr=10-ring*4;for(let a=0;a<18;a++){const an=a/18*6.28;px(x,GX+Math.cos(an)*rr,GY-5+Math.sin(an)*rr*0.56,1,1,ring?C.stM:C.stD);}}px(x,GX-12,GY-6,24,1,C.st);},
+    amphi:(x)=>{ // Colosseum — oval arena + surviving multi-tier facade stepping down (broken)
+      ellF(x,GX,GY-3,12,6,C.st);ellF(x,GX,GY-3,12,6,C.stM);ellF(x,GX,GY-3,7,3,C.stD);
+      for(let a=0;a<22;a++){const an=a/22*6.28;px(x,GX+Math.round(Math.cos(an)*11),GY-3+Math.round(Math.sin(an)*5.5),1,2,C.st);}
+      for(let c=0;c<13;c++){const h=Math.max(2,14-c);px(x,GX-11+c,GY-4-h,1,h,C.st);px(x,GX-11+c,GY-4-h,1,1,C.stM);}
+      for(let r=0;r<3;r++)for(let cc=0;cc<4;cc++)px(x,GX-9+cc*3,GY-15+r*4,1,2,C.stD);},
     theatre:(x)=>{halfDome(x,GX,GY,12,9,C.stM);halfDome(x,GX,GY-1,9,7,C.st);px(x,GX-12,GY,24,2,C.stD);for(let i=0;i<5;i++)px(x,GX-9+i*4,GY-6,1,6,C.stD);},
     baths:(x)=>{px(x,GX-11,GY-9,22,11,C.stM);halfDome(x,GX-5,GY-9,5,4,C.st);halfDome(x,GX+5,GY-9,5,4,C.st);px(x,GX-11,GY-9,22,1,C.st);px(x,GX-8,GY-4,4,6,C.stD);px(x,GX+4,GY-4,4,6,C.stD);},
     dome:(x)=>{px(x,GX-10,GY-2,20,4,C.marS);halfDome(x,GX,GY-2,9,10,C.stM);halfDome(x,GX,GY-3,7,8,C.st);px(x,GX-1,GY-14,2,3,C.gold);for(let i=0;i<4;i++)px(x,GX-8+i*5,GY-2,2,4,C.mar);},
+    pantheon:(x)=>{ // portico of columns + pediment, shallow dome behind
+      px(x,GX-9,GY-3,20,5,C.stM);halfDome(x,GX+2,GY-3,10,6,C.stM);halfDome(x,GX+2,GY-4,8,4,C.st);
+      triUp(x,GX-3,GY-7,17,5,C.marS);px(x,GX-12,GY-7,18,1,C.mar);
+      for(let i=0;i<6;i++)px(x,GX-11+i*3,GY-6,2,8,C.mar);px(x,GX-12,GY+1,19,1,C.stD);},
+    stpeters:(x)=>{ // Michelangelo's great ribbed dome, lantern & cross, over the facade
+      px(x,GX-11,GY-4,22,6,C.mar);px(x,GX-11,GY-4,22,1,C.marS);
+      for(let i=0;i<9;i++)px(x,GX-10+Math.round(i*2.6),GY-3,1,5,C.marS);
+      halfDome(x,GX,GY-4,9,11,C.st);halfDome(x,GX,GY-5,7,9,C.mar);
+      for(const dx of[-6,-3,0,3,6]){const hh=Math.round(10*(1-Math.abs(dx)/8));px(x,GX+dx,GY-4-hh,1,hh,C.marS);}
+      px(x,GX-1,GY-18,2,3,C.st);px(x,GX-1,GY-22,2,3,C.gold);px(x,GX-2,GY-21,4,1,C.gold);},
     column:(x)=>{px(x,GX-1,GY-16,3,17,C.mar);px(x,GX-2,GY,5,2,C.marS);px(x,GX-2,GY-18,5,2,C.marS);px(x,GX-1,GY-21,2,3,C.gold);},
     arch:(x)=>{px(x,GX-8,GY-11,16,13,C.stM);px(x,GX-8,GY-13,16,2,C.st);px(x,GX-3,GY-3,6,5,C.stD);halfDome(x,GX,GY-3,3,4,C.stD);},
     pyramid:(x)=>{triUp(x,GX,GY,20,16,C.mar);for(let i=0;i<16;i++)px(x,GX,GY-i,Math.round(10*(1-i/16)),1,C.marS);},
     tomb:(x)=>{ellF(x,GX,GY-2,11,4,C.stM);px(x,GX-11,GY-8,22,6,C.st);ellF(x,GX,GY-8,11,4,C.st);ellF(x,GX,GY-10,6,2,C.cyA);},
-    castle:(x)=>{px(x,GX-10,GY-2,20,4,C.stM);ellF(x,GX,GY-2,10,3,C.stM);px(x,GX-6,GY-12,12,10,C.st);for(const dx of[-6,-2,2,5])px(x,GX+dx,GY-14,2,2,C.stM);},
+    castle:(x)=>{ // Castel Sant'Angelo — round drum on square base, bronze angel on top
+      px(x,GX-11,GY-3,22,5,C.stM);px(x,GX-11,GY-3,22,1,C.st);
+      px(x,GX-8,GY-13,16,10,C.st);px(x,GX-8,GY-13,16,1,C.stM);ellF(x,GX,GY-13,8,2,C.st);
+      for(const dx of[-8,-4,0,4,7])px(x,GX+dx,GY-15,2,2,C.stM);
+      px(x,GX-3,GY-18,6,5,C.stM);px(x,GX-3,GY-18,6,1,C.st);
+      px(x,GX-1,GY-22,2,4,C.gold);px(x,GX-3,GY-21,6,1,C.gold);},
     basilica:(x)=>{px(x,GX-10,GY-6,17,8,C.marS);triUp(x,GX-2,GY-6,17,4,C.roof);px(x,GX+7,GY-12,4,14,C.st);px(x,GX+8,GY-15,2,3,C.stD);px(x,GX+7,GY-14,4,1,C.stD);},
     hall:(x)=>{px(x,GX-10,GY-8,20,10,C.marS);triUp(x,GX,GY-8,22,4,C.roof);px(x,GX-7,GY-4,4,6,C.stD);px(x,GX+3,GY-4,4,6,C.stD);},
     tower:(x)=>{px(x,GX-3,GY-18,7,20,C.stM);for(const dx of[-3,0,3])px(x,GX+dx,GY-20,2,2,C.stM);px(x,GX-1,GY-4,2,4,C.stD);},
     fountain:(x)=>{ellF(x,GX,GY-1,10,4,C.watHi);ellF(x,GX,GY-1,10,4,C.wat);px(x,GX-1,GY-8,3,7,C.marS);px(x,GX-3,GY-9,7,2,C.mar);},
     steps:(x)=>{for(let i=0;i<6;i++)px(x,GX-9+i,GY-2-i*2,18-i*2,2,i%2?C.marS:C.mar);},
     colonnade:(x)=>{for(let i=0;i<9;i++){const an=(i/8-0.5)*2.2;px(x,GX+Math.sin(an)*12,GY-2-Math.cos(an)*3,2,5,C.mar);}},
-    wedding:(x)=>{px(x,GX-11,GY-1,22,3,C.mar);px(x,GX-8,GY-5,16,4,C.mar);triUp(x,GX,GY-5,16,5,C.mar);for(let i=0;i<6;i++)px(x,GX-8+i*3,GY-5,1,4,C.marS);},
+    wedding:(x)=>{ // Vittoriano — the white "wedding cake": tiers, colonnade, gilded quadrigae
+      px(x,GX-12,GY-1,24,3,C.mar);px(x,GX-11,GY-4,22,3,C.marS);px(x,GX-9,GY-6,18,2,C.mar);
+      for(let i=0;i<11;i++)px(x,GX-9+Math.round(i*1.8),GY-11,1,5,C.mar);
+      px(x,GX-9,GY-12,18,1,C.marS);px(x,GX-6,GY-15,12,3,C.mar);
+      px(x,GX-2,GY-18,4,3,C.gold);px(x,GX-9,GY-15,2,2,C.gold);px(x,GX+7,GY-15,2,2,C.gold);},
     circus:(x)=>{ellF(x,GX,GY-3,12,5,C.stM);ellF(x,GX,GY-3,9,3,C.grassC);px(x,GX-6,GY-4,12,2,C.stD);},
     church:(x)=>{px(x,GX-9,GY-7,18,9,C.marS);triUp(x,GX,GY-13,18,6,C.roofD);px(x,GX-1,GY-19,2,6,C.marS);px(x,GX-3,GY-17,6,2,C.marS);px(x,GX-2,GY-4,4,6,C.stD);},
     obelisk:(x)=>{px(x,GX-3,GY-1,6,3,C.marS);for(let i=0;i<20;i++)px(x,GX,GY-2-i,Math.round(4*(1-i/26)),1,C.st);triUp(x,GX,GY-22,3,3,C.gold);},

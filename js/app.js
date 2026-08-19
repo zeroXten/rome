@@ -80,7 +80,7 @@
     const marker = L.marker([m.lat, m.lng], {
       icon: L.divIcon({
         className: "mon-ico" + (m.status === "gone" ? " is-gone" : ""),
-        html: `<img class="psprite" src="${spriteFor(m.type, m.status)}" width="${SPRITE.SW * 2}" height="${SPRITE.SH * 2}" alt="">`,
+        html: `<img class="psprite" src="${spriteFor(m.sprite || m.type, m.status)}" width="${SPRITE.SW * 2}" height="${SPRITE.SH * 2}" alt="">`,
         iconSize: [SPRITE.SW * 2, SPRITE.SH * 2],
         iconAnchor: [SPRITE.GX * 2, SPRITE.GY * 2],   // the ground point pins to the real coordinate
         popupAnchor: [0, -SPRITE.GY * 2 + 8],
@@ -274,7 +274,7 @@
     const row = document.createElement("button");
     row.className = "lrow";
     row.innerHTML =
-      `<img class="lspr" src="${spriteFor(m.type, m.status)}" alt="">
+      `<img class="lspr" src="${spriteFor(m.sprite || m.type, m.status)}" alt="">
        <span class="ltext"><span class="lname">${m.name}</span>` +
       `<span class="lmeta">${m.date} · <span class="lstatus ${m.status}">${SHORT[m.status]}</span></span>` +
       `<span class="lblurb">${m.blurb}</span></span>` +
