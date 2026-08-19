@@ -4,7 +4,8 @@
    ===================================================================== */
 
 (function () {
-  const { MAP_BOUNDS, ERAS, MONUMENTS, buildScene, iconSVG, LABELS } = window.ROME;
+  const { MAP_BOUNDS, ERAS, MONUMENTS, buildBaseImages, spriteFor, SPRITE, LABELS } = window.ROME;
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
   const bounds = L.latLngBounds(
     [MAP_BOUNDS.south, MAP_BOUNDS.west],
@@ -20,35 +21,44 @@
     minZoom: 13,
     maxZoom: 18,
   });
-  map.fitBounds(bounds);
-  const fitZoom = map.getZoom();
-  // On tall (portrait / phone) screens, zoom in one step so the city fills the
-  // frame instead of letterboxing — the monuments cluster in the centre anyway.
-  if (map.getSize().y > map.getSize().x) map.setZoom(fitZoom + 1);
-  map.setMinZoom(fitZoom - 1);
+  // Fit the whole city into view. Re-run on load and resize so a stale container
+  // size at init (fonts still loading, etc.) can't leave the map mis-sized.
+  let HOME = { center: bounds.getCenter(), zoom: 15 };
+  function fitHome() {
+    map.invalidateSize();
+    map.fitBounds(bounds);
+    const fitZoom = map.getZoom();
+    // On tall (portrait / phone) screens, zoom in one step so the city fills the
+    // frame instead of letterboxing — the monuments cluster in the centre anyway.
+    if (map.getSize().y > map.getSize().x) map.setZoom(fitZoom + 1);
+    map.setMinZoom(fitZoom - 1);
+    HOME = { center: map.getCenter(), zoom: map.getZoom() };
+  }
+  fitHome();
+  window.addEventListener("load", fitHome);
 
-  // Remember this framing so the "Back to Rome" button can return to it
-  const HOME = { center: map.getCenter(), zoom: map.getZoom() };
-
-  // Illustrated basemap as an SVG overlay pinned to real coordinates
-  const scene = buildScene();
-  L.svgOverlay(scene, bounds, { interactive: false, className: "rome-art" }).addTo(map);
+  // Pixel-art base terrain: one full image per era, stacked and cross-faded.
+  const baseLayers = buildBaseImages().map((url) =>
+    L.imageOverlay(url, bounds, { interactive: false, className: "pixel-base", opacity: 0 }).addTo(map)
+  );
+  function updateBase(t) {
+    const lo = clamp(Math.floor(t), 0, 8);
+    const hi = Math.min(lo + 1, 8);
+    const frac = clamp(t - Math.floor(t), 0, 1);
+    baseLayers.forEach((layer, i) => layer.setOpacity(i === lo ? 1 : (i === hi ? frac : 0)));
+  }
 
   /* ---------------- fade engine ---------------- */
-  // t runs 0..9 across the nine era-bands. Element with data-appear=E is
-  // fully in when t reaches E-1; data-out=O means fully gone when t reaches O-1.
+  // t runs 0..9 across the nine era-bands. A monument with era=E is fully solid
+  // once t reaches E-1, and cross-fades in only over the last ~0.45 of the
+  // previous band; out=O means fully gone when t reaches O-1.
   function opacityFor(appear, out, t) {
-    // Fully solid from the start of its own era band; cross-fades in only over the
-    // last ~0.45 of the previous band, so mid-era views stay crisp (no faint bleed
-    // of next-era monuments).
     const W = 0.45;
     const inEnd = appear - 1;
     let op = clamp((t - (inEnd - W)) / W, 0, 1);
     if (out != null) op *= clamp((out - 1 - t) / W, 0, 1);
     return op;
   }
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const featEls = () => scene.querySelectorAll(".feat");
 
   /* ---------------- monument markers (fixed-size icon markers) ---------------- */
   const STATUS = {
@@ -68,11 +78,11 @@
     const marker = L.marker([m.lat, m.lng], {
       icon: L.divIcon({
         className: "mon-ico" + (m.status === "gone" ? " is-gone" : ""),
-        html: iconSVG(m.type, m.status),
-        iconSize: [44, 44],
-        iconAnchor: [22, 36],   // the ground dot pins to the real coordinate
-        popupAnchor: [0, -30],
-        tooltipAnchor: [0, -26],
+        html: `<img class="psprite" src="${spriteFor(m.type, m.status)}" width="${SPRITE.SW * 2}" height="${SPRITE.SH * 2}" alt="">`,
+        iconSize: [SPRITE.SW * 2, SPRITE.SH * 2],
+        iconAnchor: [SPRITE.GX * 2, SPRITE.GY * 2],   // the ground point pins to the real coordinate
+        popupAnchor: [0, -SPRITE.GY * 2 + 8],
+        tooltipAnchor: [0, -SPRITE.GY * 2 + 12],
       }),
       riseOnHover: true,
       keyboard: false,
@@ -156,13 +166,7 @@
 
   function render() {
     const t = (slider.value / 1000) * 9; // 0..9
-    // fade all artwork
-    featEls().forEach((el) => {
-      const appear = parseFloat(el.dataset.appear);
-      const out = el.dataset.out != null ? parseFloat(el.dataset.out) : null;
-      if (appear === 0 && out == null) { el.style.opacity = 1; return; }
-      el.style.opacity = opacityFor(appear, out, t);
-    });
+    updateBase(t);
     updateMarkers(t);
     updateLabels(t);
 
@@ -173,7 +177,7 @@
     eraName.textContent = era.name;
     eraSub.textContent = era.sub;
     eraYear.textContent = fmtYear(lerp(era.start, era.end, frac));
-    eraPop.textContent = "≈ " + era.pop + " people";
+    eraPop.textContent = era.pop === "declining" ? "population declining" : era.pop.replace("~", "") + " people";
     eraBlurb.textContent = era.blurb;
     document.body.dataset.era = era.i;
   }

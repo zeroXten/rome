@@ -12,14 +12,20 @@ Perfect for GitHub Pages.
 ## What's in the box
 
 ```
-index.html                 – the page shell
-css/style.css              – parchment / old-map styling
+index.html                 – the page shell (loads the VT323 pixel font; falls back to monospace)
+css/style.css              – Civ-2 / retro pixel-game styling (beveled panels, chunky slider)
 js/data.js                 – SINGLE SOURCE OF TRUTH: eras + monuments (coords, dates, blurbs)
-js/art.js                  – procedurally draws the illustrated map as one SVG, tagged by era
-js/app.js                  – Leaflet map, time-slider cross-fade, popups, GPS
+js/art.js                  – PIXEL-ART engine: draws the terrain to low-res canvases (one per era)
+                             and each monument to a small pixel sprite
+js/app.js                  – Leaflet map, time-slider cross-fade, popups, GPS, reset
 lib/leaflet/               – vendored Leaflet 1.9.4 (map engine)
+mockup-pixel.html          – standalone style mockup (reference only; not used by the app)
 docs/historical-reference.md – the researched history behind the data, with references
 ```
+
+The look is **pixel art**: the base map is rendered to small canvases that Leaflet scales up
+with `image-rendering: pixelated`, and monuments are fixed-size pixel sprites — so it stays
+crunchy at every zoom while the geography underneath is still real (GPS lands correctly).
 
 The map is real-world-accurate under the hood: the illustration is pinned to true
 latitude/longitude, so the GPS "you are here" dot lands in the right place and pan/zoom
