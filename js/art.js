@@ -21,7 +21,7 @@
     fabRoof: "#9d5c44", fabWall: "#b0997180", fabRoofD: "#7f3a24",
     road: "#cdb079", roadD: "#a5884f",
     cyA: "#2c5730", cyB: "#3f7442", trunk: "#6b4a2a",
-    lawnA: "#69a83a", lawnB: "#5c9a31", scrub: "#2f5620",
+    lawnA: "#7cb63f", lawnB: "#6aa834", parkEdge: "#33611f", scrub: "#2f5620",
     mar: "#efe9d6", marS: "#c9bf9e", roof: "#b5482f", roofD: "#7f3120",
     gold: "#f2cf58",
   };
@@ -142,20 +142,25 @@
   }
 
   function drawPark(x, la, ln, r) {
+    // Bright manicured lawn + a dark treed border + generous tree canopy, so a
+    // park reads clearly as a green space against the plainer countryside grass.
     const c = pt(la, ln), R = r * PX;
     for (let dy = -R; dy <= R; dy++) {
       const tt = 1 - (dy * dy) / (R * R); if (tt < 0) continue;
       const dx = Math.round(R * Math.sqrt(tt)), yy = Math.round(c.y + dy);
       for (let ix = Math.round(c.x - dx); ix <= c.x + dx; ix++) {
-        const n = nz(ix * 1.4, yy * 1.4);
-        px(x, ix, yy, 1, 1, n > 0.78 ? C.forest : (n > 0.42 ? C.lawnA : C.lawnB));
+        const near = Math.min(dx - Math.abs(ix - c.x), R - Math.abs(dy)); // dist to park edge
+        const n = nz(ix * 1.2, yy * 1.2);
+        if (near < 3) px(x, ix, yy, 1, 1, n > 0.5 ? C.parkEdge : C.forest);      // wooded rim
+        else if (n > 0.66) px(x, ix, yy, 1, 1, C.forest);                        // scattered trees
+        else px(x, ix, yy, 1, 1, n > 0.4 ? C.lawnA : C.lawnB);                   // bright lawn
       }
     }
-    const clusters = Math.max(3, Math.round(R / 5));
+    const clusters = Math.max(5, Math.round(R / 3));
     for (let k = 0; k < clusters; k++) {
-      const a = nz(k + 1, c.x) * 6.28, rr = nz(c.y, k + 1) * R * 0.82;
+      const a = nz(k + 1, c.x) * 6.28, rr = (0.25 + 0.68 * nz(c.y, k + 1)) * R;
       const tx = c.x + Math.cos(a) * rr, ty = c.y + Math.sin(a) * rr * 0.9;
-      ellF(x, tx, ty - 1, 2, 2, C.forest); ellF(x, tx, ty - 2, 1, 1, C.cyB);
+      ellF(x, tx, ty - 1, 2, 3, C.forest); ellF(x, tx, ty - 2, 2, 2, C.cyB);
     }
   }
 
