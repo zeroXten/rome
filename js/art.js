@@ -268,6 +268,11 @@
     aqueduct:(x)=>{px(x,GX-11,GY-8,22,3,C.st);for(const gx of[-11,-4,3,10])px(x,GX+gx,GY-5,2,7,C.stM);for(const gx of[-9,-2,5])halfDome(x,GX+gx+2,GY-5,3,3,C.stM);},
     gate:(x)=>{px(x,GX-8,GY-8,16,10,C.stM);px(x,GX-10,GY-12,5,14,C.st);px(x,GX+5,GY-12,5,14,C.st);px(x,GX-3,GY-3,6,5,C.stD);halfDome(x,GX,GY-3,3,4,C.stD);},
     catacomb:(x)=>{halfDome(x,GX,GY,11,7,C.stM);px(x,GX-2,GY-4,4,6,C.stD);px(x,GX-1,GY-11,2,5,C.st);px(x,GX-2,GY-9,4,1,C.st);},
+    moment:(x)=>{ // a marker where history happened — a small commemorative flag
+      px(x,GX-3,GY-1,7,3,C.stM);px(x,GX-3,GY-1,7,1,C.st);
+      px(x,GX-1,GY-18,2,18,C.stD);
+      for(let i=0;i<8;i++)px(x,GX+1,GY-18+i,9-i,1,"#9c3535");
+      px(x,GX+1,GY-18,8,1,"#c05a5a");},
     park:(x)=>{px(x,GX-10,GY-1,20,3,C.lawnB);for(const [dx,dy] of [[-7,-1],[-1,-4],[6,-2],[-4,-6],[3,-7],[8,-5]]){px(x,GX+dx,GY+dy,2,4,C.trunk);ellF(x,GX+dx+1,GY+dy-2,3,4,C.cyA);ellF(x,GX+dx,GY+dy-3,2,3,C.cyB);}},
   };
 

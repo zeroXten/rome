@@ -146,6 +146,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; color: var(--ink);
 }
 .lstatus.standing { color: #2f5f1c; } .lstatus.ruin { color: #8a4a1c; } .lstatus.gone { color: #6b5836; }
 .lsecret { color: #7a3f8a; }
+.lmoment { color: #9c3535; }
 .ldist { font-size: 18px; color: var(--gold); white-space: nowrap; flex: 0 0 auto; align-self: flex-start; margin-top: 2px; }
 #locate-msg {
   position: absolute; right: 64px; bottom: 138px; z-index: 500; max-width: 210px;
@@ -221,6 +222,7 @@ input#time::-moz-range-thumb {
 .pop .badge.standing { background: #dcecc9; color: #2f5f1c; border-color: #a9cf88 #4d7327 #4d7327 #a9cf88; }
 .pop .badge.ruin     { background: #f2ddc4; color: #8a4a1c; border-color: #d9b489 #93571f #93571f #d9b489; }
 .pop .badge.gone     { background: #ddd3c0; color: #5a4632; border-color: #c1b49a #6b5836 #6b5836 #c1b49a; }
+.pop .badge.moment   { background: #f4e0d3; color: #8a3320; border-color: #e8c6ac #8a4020 #8a4020 #e8c6ac; }
 .pop .secret-tag {
   display: inline-block; font-size: 15px; letter-spacing: 1px; margin-bottom: 7px; padding: 1px 8px;
   color: #6a2d7a; background: #efe0f4; border: 2px solid; border-color: #e4c9ec #6a3a78 #6a3a78 #e4c9ec;
