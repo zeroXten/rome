@@ -15,10 +15,10 @@
   const map = L.map("map", {
     zoomControl: true,
     attributionControl: false,
-    maxBounds: bounds.pad(0.35),
-    maxBoundsViscosity: 0.9,
+    maxBounds: bounds.pad(1.4),        // roomy void to explore around the island
+    maxBoundsViscosity: 0.6,
     zoomSnap: 0.25,
-    minZoom: 13,
+    minZoom: 11,
     maxZoom: 18,
   });
   // Fit the whole city into view. Re-run on load and resize so a stale container
@@ -31,7 +31,7 @@
     // On tall (portrait / phone) screens, zoom in one step so the city fills the
     // frame instead of letterboxing — the monuments cluster in the centre anyway.
     if (map.getSize().y > map.getSize().x) map.setZoom(fitZoom + 1);
-    map.setMinZoom(fitZoom - 1);
+    map.setMinZoom(fitZoom - 2);   // allow zooming out to see the island in the void
     HOME = { center: map.getCenter(), zoom: map.getZoom() };
   }
   fitHome();
@@ -99,7 +99,8 @@
            <a href="https://www.google.com/maps/dir/?api=1&destination=${dest}" target="_blank" rel="noopener">📍 Directions</a>
          </div>
        </div>`,
-      { maxWidth: 264, className: "rome-popup" }
+      { maxWidth: 264, className: "rome-popup",
+        autoPanPaddingTopLeft: L.point(14, 134), autoPanPaddingBottomRight: L.point(14, 124) }
     );
     marker._m = m;
     marker._ghost = st.ghost;

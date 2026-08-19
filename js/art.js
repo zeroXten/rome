@@ -20,6 +20,7 @@
     fabRoof: "#9d5c44", fabWall: "#b0997180", fabRoofD: "#7f3a24",
     road: "#cdb079", roadD: "#a5884f",
     cyA: "#2c5730", cyB: "#3f7442", trunk: "#6b4a2a",
+    lawnA: "#69a83a", lawnB: "#5c9a31", scrub: "#2f5620",
     mar: "#efe9d6", marS: "#c9bf9e", roof: "#b5482f", roofD: "#7f3120",
     gold: "#f2cf58",
   };
@@ -112,6 +113,37 @@
     }
   }
 
+  function drawPark(x, la, ln, r) {
+    const c = pt(la, ln), R = r * PX;
+    for (let dy = -R; dy <= R; dy++) {
+      const tt = 1 - (dy * dy) / (R * R); if (tt < 0) continue;
+      const dx = Math.round(R * Math.sqrt(tt)), yy = Math.round(c.y + dy);
+      for (let ix = Math.round(c.x - dx); ix <= c.x + dx; ix++) {
+        const n = nz(ix * 1.4, yy * 1.4);
+        px(x, ix, yy, 1, 1, n > 0.78 ? C.forest : (n > 0.42 ? C.lawnA : C.lawnB));
+      }
+    }
+    const clusters = Math.max(3, Math.round(R / 5));
+    for (let k = 0; k < clusters; k++) {
+      const a = nz(k + 1, c.x) * 6.28, rr = nz(c.y, k + 1) * R * 0.82;
+      const tx = c.x + Math.cos(a) * rr, ty = c.y + Math.sin(a) * rr * 0.9;
+      ellF(x, tx, ty - 1, 2, 2, C.forest); ellF(x, tx, ty - 2, 1, 1, C.cyB);
+    }
+  }
+
+  // ragged "coastline" so the map is an organic green island in the void, not a hard rectangle
+  function raggedEdge(x) {
+    const margin = 30;
+    for (let iy = 0; iy < BH; iy++) for (let ix = 0; ix < BW; ix++) {
+      const d = Math.min(ix, iy, BW - 1 - ix, BH - 1 - iy);
+      if (d > margin) continue;
+      const tt = d / margin;
+      const cut = 0.28 + 0.5 * nz(ix * 0.55, iy * 0.55);
+      if (tt < cut) x.clearRect(ix, iy, 1, 1);
+      else if (tt < cut + 0.16) px(x, ix, iy, 1, 1, nz(ix, iy) > 0.5 ? C.forest : C.scrub);
+    }
+  }
+
   function drawCircus(x) {
     const m = MONUMENTS.find(mm => mm.type === "circus"); if (!m) return;
     const c = pt(m.lat, m.lng);
@@ -133,13 +165,16 @@
     if (era >= 3) thickLine(x, AQ_MARCIA, 0, () => C.stM);
     if (era >= 4) thickLine(x, AQ_VIRGO, 0, () => C.st);
     if (era >= 5) thickLine(x, AQ_CLAUDIA, 0, () => C.stM);
-    // city fabric (cumulative growth, medieval shrink)
-    FABRIC.forEach(([la, ln, rx, ry, from, out]) => { if (from <= era && era < out) drawFabricBlob(x, la, ln, rx, ry); });
-    if (era >= 9) { for (let yy = 0; yy < BH; yy += 2) for (let xx = 0; xx < BW; xx += 2) { const r = nz(xx, yy); if (r > 0.84) px(x, xx, yy, 2, 2, C.fabRoof); else if (r > 0.5) px(x, xx, yy, 2, 2, C.fabWall); } drawRiver(x); }
+    // (The built-up "population" texture was removed — it added too much visual
+    //  noise. The city's extent is told by its buildings, walls and parks instead;
+    //  the population figure lives in the readout panel.)
+    // parks & green spaces
+    MONUMENTS.forEach((m) => { if (m.type === "park" && m.era <= era) drawPark(x, m.lat, m.lng, m.r || 30); });
     if (era >= 2) drawCircus(x);
     // walls
     if (era >= 2 && era < 7) drawWall(x, SERVIAN);
     if (era >= 6) { drawWall(x, AUR_E); drawWall(x, AUR_W); }
+    raggedEdge(x);
     return cv.toDataURL();
   }
 
@@ -177,6 +212,7 @@
     aqueduct:(x)=>{px(x,GX-11,GY-8,22,3,C.st);for(const gx of[-11,-4,3,10])px(x,GX+gx,GY-5,2,7,C.stM);for(const gx of[-9,-2,5])halfDome(x,GX+gx+2,GY-5,3,3,C.stM);},
     gate:(x)=>{px(x,GX-8,GY-8,16,10,C.stM);px(x,GX-10,GY-12,5,14,C.st);px(x,GX+5,GY-12,5,14,C.st);px(x,GX-3,GY-3,6,5,C.stD);halfDome(x,GX,GY-3,3,4,C.stD);},
     catacomb:(x)=>{halfDome(x,GX,GY,11,7,C.stM);px(x,GX-2,GY-4,4,6,C.stD);px(x,GX-1,GY-11,2,5,C.st);px(x,GX-2,GY-9,4,1,C.st);},
+    park:(x)=>{px(x,GX-10,GY-1,20,3,C.lawnB);for(const [dx,dy] of [[-7,-1],[-1,-4],[6,-2],[-4,-6],[3,-7],[8,-5]]){px(x,GX+dx,GY+dy,2,4,C.trunk);ellF(x,GX+dx+1,GY+dy-2,3,4,C.cyA);ellF(x,GX+dx,GY+dy-3,2,3,C.cyB);}},
   };
 
   function statusPad(x, status) {
