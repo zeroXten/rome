@@ -7,11 +7,12 @@
 /* Geographic rectangle the illustrated map covers.
    Chosen to include St Peter's (W), San Giovanni/Termini (E),
    Spanish Steps/Mausoleum of Augustus (N), Baths of Caracalla/Pyramid (S). */
-const MAP_BOUNDS = { west: 12.446, east: 12.514, south: 41.870, north: 41.912 };
+const MAP_BOUNDS = { west: 12.446, east: 12.514, south: 41.870, north: 41.922 };
 
-/* Artwork viewBox. Aspect ~matches the real-world km ratio of the bounds
-   so circles stay circular when Leaflet stretches the SVG over the bounds. */
-const VB = { w: 1206, h: 1000 };
+/* Artwork viewBox. Aspect matches the real-world km ratio of the bounds
+   (so circles stay circular) — recomputed when the bounds change: the taller
+   northern extent to include Villa Borghese/Parioli makes it taller too. */
+const VB = { w: 1206, h: 1240 };
 
 /* Linear projection lng/lat -> artwork viewBox coordinates.
    Shared by the art layer and (implicitly, via Leaflet) the markers,
@@ -187,7 +188,9 @@ const MONUMENTS = [
   // ===================================================================
   // Parks & green spaces — quiet green walks away from the crowds
   // ===================================================================
-  { id: "villaborghese", name: "Villa Borghese",          type: "park", r: 90, lat: 41.9105, lng: 12.4855, era: 8, status: "standing", date: "from 1605", blurb: "Rome's grand green heart — shady avenues, a boating lake and gardens laid out for Cardinal Borghese. The city's favourite escape from the crowds.", wiki: "https://en.wikipedia.org/wiki/Villa_Borghese_gardens" },
+  { id: "villaborghese", name: "Villa Borghese",          type: "park", r: 150, lat: 41.9150, lng: 12.4880, era: 8, status: "standing", date: "from 1605", blurb: "Rome's grand green heart — shady avenues, a boating lake and gardens laid out for Cardinal Borghese. The city's favourite escape from the crowds.", wiki: "https://en.wikipedia.org/wiki/Villa_Borghese_gardens" },
+  { id: "galleriaborghese", name: "Galleria Borghese",    type: "hall", lat: 41.9142, lng: 12.4923, era: 8, status: "standing", date: "1613", blurb: "One of the world's great small museums, inside the Borghese pleasure-villa — Bernini's breathtaking marbles and six Caravaggios.", wiki: "https://en.wikipedia.org/wiki/Galleria_Borghese" },
+  { id: "pincio",      name: "Pincio Terrace",             type: "park", r: 22, lat: 41.9110, lng: 12.4788, era: 9, status: "standing", date: "1810s", blurb: "The panoramic terrace above Piazza del Popolo — the classic spot to watch the sun set over the domes of Rome.", wiki: "https://en.wikipedia.org/wiki/Pincian_Hill" },
   { id: "farnesegardens", name: "Farnese Gardens",        type: "park", r: 28, lat: 41.8899, lng: 12.4858, era: 8, status: "standing", date: "1550s", blurb: "One of Europe's first botanical gardens, terraced quietly over the ruins of the emperors' palace on the Palatine.", wiki: "https://en.wikipedia.org/wiki/Farnese_Gardens" },
   { id: "villacelimontana", name: "Villa Celimontana",    type: "park", r: 42, lat: 41.8846, lng: 12.4931, era: 8, status: "standing", date: "16th c.", blurb: "A leafy, little-visited park on the Caelian Hill — palms, lawns and an Egyptian obelisk, blissfully calm.", wiki: "https://en.wikipedia.org/wiki/Villa_Celimontana" },
   { id: "orangegarden", name: "Orange Garden (Parco Savello)", type: "park", r: 24, lat: 41.8843, lng: 12.4796, era: 9, status: "standing", date: "1932", blurb: "A serene walled garden of orange trees on the Aventine, framing one of the most beautiful views over Rome.", wiki: "https://en.wikipedia.org/wiki/Giardino_degli_Aranci" },
@@ -206,6 +209,7 @@ const LABELS = [
   { text: "Capitoline",     lat: 41.8936, lng: 12.4820, era: 1, size: 11 },
   { text: "Aventine",       lat: 41.8834, lng: 12.4808, era: 2, size: 11 },
   { text: "Esquiline",      lat: 41.8968, lng: 12.4968, era: 2, size: 11 },
+  { text: "Villa Borghese", lat: 41.9175, lng: 12.4885, era: 8, size: 12 },
   { text: "Trastevere",     lat: 41.8858, lng: 12.4632, era: 5, size: 12 },
   { text: "Via Appia",      lat: 41.8748, lng: 12.5035, era: 3, size: 11, rotate: -30 },
   { text: "Tiber",          lat: 41.8826, lng: 12.4757, era: 0, size: 12, rotate: 68 },

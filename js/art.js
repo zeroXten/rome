@@ -41,6 +41,7 @@
   // Tiber traced through its real bridges (each bridge sits on the river), so the
   // characteristic westward bend around the Campus Martius is captured.
   const RIVER = [
+    [41.9220,12.4690],[41.9165,12.4715],                                      // enters from the north
     [41.9120,12.4745],[41.9083,12.4756],[41.9058,12.4744],[41.9017,12.4712], // → Ponte Sant'Angelo
     [41.9013,12.4664],[41.8994,12.4649],[41.8975,12.4640],                    // westward bend
     [41.8949,12.4664],[41.8925,12.4694],[41.8909,12.4757],[41.8901,12.4780],  // → Tiber Island
