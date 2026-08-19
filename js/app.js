@@ -37,6 +37,9 @@
   fitHome();
   window.addEventListener("load", fitHome);
 
+  // Live scale bar (metric) — shows how far a given distance is at the current zoom.
+  L.control.scale({ position: "topleft", metric: true, imperial: false, maxWidth: 120 }).addTo(map);
+
   // Pixel-art base terrain: one full image per era, stacked and cross-faded.
   const baseLayers = buildBaseImages().map((url) =>
     L.imageOverlay(url, bounds, { interactive: false, className: "pixel-base", opacity: 0 }).addTo(map)

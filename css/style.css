@@ -59,6 +59,15 @@ html, body { margin: 0; height: 100%; overflow: hidden; color: var(--ink);
 }
 .leaflet-control-zoom a:active { border-color: var(--stone-dk) var(--panel-lt) var(--panel-lt) var(--stone-dk) !important; }
 
+/* ---- scale bar (pixel-styled ruler) ---- */
+.leaflet-control-scale { margin: 8px 0 0 10px !important; }
+.leaflet-control-scale-line {
+  background: var(--panel); color: var(--ink); font-family: var(--pix); font-size: 15px; letter-spacing: 1px;
+  border: 2px solid var(--ink); border-top: none; border-radius: 0; padding: 0 6px 1px; line-height: 1.25;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.28); text-shadow: none;
+}
+.leaflet-control-scale-line:not(:first-child) { border-top: 2px solid var(--ink); border-bottom: none; margin-top: -2px; }
+
 /* ---- title bar ---- */
 #title {
   position: absolute; top: 10px; left: 10px; z-index: 500;
