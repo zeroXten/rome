@@ -276,7 +276,8 @@
     row.innerHTML =
       `<img class="lspr" src="${spriteFor(m.type, m.status)}" alt="">
        <span class="ltext"><span class="lname">${m.name}</span>` +
-      `<span class="lmeta">${m.date} · <span class="lstatus ${m.status}">${SHORT[m.status]}</span></span></span>` +
+      `<span class="lmeta">${m.date} · <span class="lstatus ${m.status}">${SHORT[m.status]}</span></span>` +
+      `<span class="lblurb">${m.blurb}</span></span>` +
       `<span class="ldist"></span>`;
     row.addEventListener("click", () => goToSite(m));
     return row;
