@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="css/style.css?v=9" />
+  <link rel="stylesheet" href="css/style.css?v=11" />
 </head>
 <body>
   <div id="map"></div>
@@ -68,6 +68,21 @@
     </div>
   </div>
 
+  <!-- Sites list -->
+  <button id="list-btn" title="List of sites">Sites</button>
+  <div id="listpanel">
+    <div class="list-head">
+      <div class="list-titlebar"><span class="list-title">Sites of Rome</span><button id="list-close" aria-label="Close">×</button></div>
+      <div class="sort">
+        <span class="sort-lbl">Sort:</span>
+        <button id="sort-dist">Nearest</button>
+        <button id="sort-year" class="on">By year</button>
+      </div>
+      <div id="list-sub"></div>
+    </div>
+    <div id="listrows"></div>
+  </div>
+
   <!-- Time control -->
   <div id="control">
     <div id="chips"></div>
@@ -94,8 +109,8 @@
     </div>
   </div>
 
-  <script src="js/data.js?v=9"></script>
-  <script src="js/art.js?v=9"></script>
-  <script src="js/app.js?v=9"></script>
+  <script src="js/data.js?v=11"></script>
+  <script src="js/art.js?v=11"></script>
+  <script src="js/app.js?v=11"></script>
 </body>
 </html>

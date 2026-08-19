@@ -72,6 +72,8 @@
   // stranded under the popup — so we skip binding tooltips there.
   const canHover = !!(window.matchMedia && window.matchMedia("(hover: hover)").matches);
 
+  const markersById = {};
+  let userPos = null;                 // {lat,lng} once geolocation succeeds (shared by GPS + list)
   const markers = MONUMENTS.map((m) => {
     const st = STATUS[m.status] || STATUS.standing;
     const dest = encodeURIComponent(m.gmap || `${m.lat},${m.lng}`); // Google Maps directions target
@@ -104,6 +106,7 @@
     );
     marker._m = m;
     marker._ghost = st.ghost;
+    markersById[m.id] = marker;
     return marker;
   });
 
@@ -212,6 +215,8 @@
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude, accuracy } = pos.coords;
+        userPos = { lat: latitude, lng: longitude };
+        refreshListDistances();
         const ll = L.latLng(latitude, longitude);
         if (youMarker) { map.removeLayer(youMarker); map.removeLayer(youCircle); }
         youCircle = L.circle(ll, { radius: accuracy, color: "#2b6cb0", weight: 1, fillColor: "#4299e1", fillOpacity: 0.15 }).addTo(map);
@@ -235,6 +240,86 @@
 
   function youIcon() {
     return L.divIcon({ className: "you-icon", html: '<div class="you-dot"></div>', iconSize: [18, 18] });
+  }
+
+  /* ---------------- sites list view ---------------- */
+  const listPanel = document.getElementById("listpanel");
+  const listRows = document.getElementById("listrows");
+  const listSub = document.getElementById("list-sub");
+  const sortDistBtn = document.getElementById("sort-dist");
+  const sortYearBtn = document.getElementById("sort-year");
+  const SHORT = { standing: "Standing", ruin: "Ruins", gone: "Vanished" };
+  let sortMode = "year";
+
+  function parseYear(m) {
+    const d = m.date; let x;
+    if (/archaic/i.test(d)) return ERAS[m.era - 1].start;
+    if ((x = /(\d+)\s*BC/i.exec(d))) return -parseInt(x[1]);
+    if ((x = /(\d+)(?:st|nd|rd|th)\s*c\.\s*BC/i.exec(d))) return -(parseInt(x[1]) * 100 - 50);
+    if ((x = /AD\s*(\d+)/i.exec(d))) return parseInt(x[1]);
+    if ((x = /\b(1[0-9]{3}|20[0-9]{2})\b/.exec(d))) return parseInt(x[1]);
+    if ((x = /(\d+)(?:st|nd|rd|th)\s*c\./i.exec(d))) return parseInt(x[1]) * 100 - 50;
+    return ERAS[m.era - 1].start;
+  }
+  MONUMENTS.forEach((m) => { m._year = parseYear(m); });
+
+  function siteLatLng(m) { // catacombs marker sits at the map edge; use the real spot for distance
+    if (m.gmap) { const p = m.gmap.split(","); return L.latLng(+p[0], +p[1]); }
+    return L.latLng(m.lat, m.lng);
+  }
+  function distMeters(m) { return userPos ? map.distance(L.latLng(userPos.lat, userPos.lng), siteLatLng(m)) : null; }
+  function fmtDist(d) { return d == null ? "" : (d < 1000 ? Math.round(d / 10) * 10 + " m" : (d / 1000).toFixed(d < 10000 ? 1 : 0) + " km"); }
+
+  const rowEls = MONUMENTS.map((m) => {
+    const row = document.createElement("button");
+    row.className = "lrow";
+    row.innerHTML =
+      `<img class="lspr" src="${spriteFor(m.type, m.status)}" alt="">
+       <span class="ltext"><span class="lname">${m.name}</span>` +
+      `<span class="lmeta">${m.date} · <span class="lstatus ${m.status}">${SHORT[m.status]}</span></span></span>` +
+      `<span class="ldist"></span>`;
+    row.addEventListener("click", () => goToSite(m));
+    return row;
+  });
+
+  function renderList() {
+    const arr = MONUMENTS.map((m, i) => ({ m, el: rowEls[i], d: distMeters(m) }));
+    if (sortMode === "dist" && userPos) arr.sort((a, b) => a.d - b.d);
+    else arr.sort((a, b) => a.m._year - b.m._year);
+    listRows.innerHTML = "";
+    arr.forEach(({ el, d }) => { el.querySelector(".ldist").textContent = fmtDist(d); listRows.appendChild(el); });
+    sortDistBtn.classList.toggle("on", sortMode === "dist");
+    sortYearBtn.classList.toggle("on", sortMode === "year");
+    sortDistBtn.disabled = !userPos;
+    listSub.textContent = userPos ? "sorted by distance from you" : (sortMode === "year" ? "sorted oldest → newest" : "");
+  }
+  function refreshListDistances() { if (listPanel.classList.contains("open")) renderList(); }
+
+  function openList() {
+    listPanel.classList.add("open");
+    if (!userPos && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        sortMode = "dist"; renderList();
+      }, () => {}, { timeout: 8000 });
+    }
+    if (userPos) sortMode = "dist";
+    renderList();
+  }
+  document.getElementById("list-btn").addEventListener("click", () =>
+    listPanel.classList.contains("open") ? listPanel.classList.remove("open") : openList());
+  document.getElementById("list-close").addEventListener("click", () => listPanel.classList.remove("open"));
+  sortDistBtn.addEventListener("click", () => { if (userPos) { sortMode = "dist"; renderList(); } });
+  sortYearBtn.addEventListener("click", () => { sortMode = "year"; renderList(); });
+
+  function goToSite(m) {
+    listPanel.classList.remove("open");
+    slider.value = Math.round(((m.era - 0.5) / 9) * 1000);  // show the era this site belongs to
+    render();
+    const mk = markersById[m.id];
+    if (!mk) return;
+    map.flyTo(L.latLng(m.lat, m.lng), Math.max(map.getZoom(), 16), { duration: 0.6 });
+    setTimeout(() => { if (!map.hasLayer(mk)) mk.addTo(map); mk.openPopup(); }, 680);
   }
 
   /* ---------------- reset view ---------------- */

@@ -82,15 +82,57 @@ html, body { margin: 0; height: 100%; overflow: hidden; color: var(--ink);
 #era-blurb { font-size: 17px; line-height: 1.15; margin: 5px 0 0; color: var(--ink); }
 
 /* ---- round pixel buttons (locate / reset / key) ---- */
-#locate, #reset, #key-btn {
+#locate, #reset, #key-btn, #list-btn {
   position: absolute; z-index: 500; background: var(--panel); color: var(--ink);
   border: 3px solid; border-color: var(--panel-lt) var(--stone-dk) var(--stone-dk) var(--panel-lt);
   cursor: pointer; display: grid; place-items: center; font-family: var(--pix);
 }
 #locate, #reset { right: 12px; width: 44px; height: 44px; }
 #locate { bottom: 132px; } #reset { bottom: 186px; }
-#key-btn { left: 12px; bottom: 132px; font-size: 20px; letter-spacing: 2px; padding: 5px 14px 3px; }
-#locate:active, #reset:active, #key-btn:active { border-color: var(--stone-dk) var(--panel-lt) var(--panel-lt) var(--stone-dk); }
+#key-btn, #list-btn { left: 12px; font-size: 20px; letter-spacing: 2px; padding: 5px 14px 3px; }
+#key-btn { bottom: 132px; } #list-btn { bottom: 186px; }
+#locate:active, #reset:active, #key-btn:active, #list-btn:active { border-color: var(--stone-dk) var(--panel-lt) var(--panel-lt) var(--stone-dk); }
+
+/* ---- sites list panel ---- */
+#listpanel {
+  position: absolute; z-index: 700; background: var(--panel); display: flex; flex-direction: column;
+  border: 3px solid; border-color: var(--panel-lt) var(--stone-dk) var(--stone-dk) var(--panel-lt);
+  transition: transform 0.22s ease;
+}
+@media (min-width: 561px) {
+  #listpanel { top: 0; right: 0; bottom: 0; width: 360px; transform: translateX(105%); }
+  #listpanel.open { transform: translateX(0); }
+}
+@media (max-width: 560px) {
+  #listpanel { left: 0; right: 0; bottom: 0; height: 82vh; transform: translateY(103%); }
+  #listpanel.open { transform: translateY(0); }
+}
+.list-head { padding: 9px 12px 8px; background: var(--stone); border-bottom: 3px solid var(--stone-dk); }
+.list-titlebar { display: flex; justify-content: space-between; align-items: center; }
+.list-title { font-size: 24px; letter-spacing: 2px; color: #241a0f; text-shadow: 1px 1px 0 var(--stone-lt); }
+#list-close { border: none; background: none; font-size: 26px; color: #241a0f; cursor: pointer; font-family: var(--pix); line-height: 1; }
+.sort { display: flex; align-items: center; gap: 6px; margin-top: 7px; }
+.sort-lbl { font-size: 16px; color: #2a2016; }
+.sort button {
+  font-family: var(--pix); font-size: 16px; letter-spacing: 1px; padding: 2px 11px 1px; cursor: pointer; color: var(--ink);
+  background: var(--panel); border: 2px solid; border-color: var(--panel-lt) var(--stone-dk) var(--stone-dk) var(--panel-lt);
+}
+.sort button.on { background: var(--stone-lt); border-color: var(--stone-dk) var(--panel-lt) var(--panel-lt) var(--stone-dk); }
+.sort button:disabled { opacity: 0.45; cursor: default; }
+#list-sub { font-size: 15px; color: #3a2c14; margin-top: 4px; min-height: 15px; font-style: italic; }
+#listrows { overflow-y: auto; flex: 1; padding: 2px 0 10px; }
+.lrow {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; cursor: pointer; font-family: var(--pix); color: var(--ink);
+  background: none; border: none; border-bottom: 2px solid rgba(90, 70, 45, 0.16); padding: 6px 12px;
+}
+.lrow:hover { background: #f5eed8; }
+.lrow:active { background: #eadfbf; }
+.lspr { width: 34px; height: 38px; image-rendering: pixelated; flex: 0 0 auto; }
+.ltext { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.lname { font-size: 20px; letter-spacing: 1px; line-height: 1.05; }
+.lmeta { font-size: 15px; color: var(--ink2); }
+.lstatus.standing { color: #2f5f1c; } .lstatus.ruin { color: #8a4a1c; } .lstatus.gone { color: #6b5836; }
+.ldist { font-size: 18px; color: var(--gold); white-space: nowrap; flex: 0 0 auto; align-self: flex-start; margin-top: 2px; }
 #locate-msg {
   position: absolute; right: 64px; bottom: 138px; z-index: 500; max-width: 210px;
   font-size: 16px; color: var(--ink); background: var(--panel); padding: 3px 8px;
@@ -191,7 +233,7 @@ input#time::-moz-range-thumb {
 
 /* ---- map key ---- */
 #legend {
-  position: absolute; left: 12px; bottom: 176px; z-index: 600; width: 264px; max-width: calc(100vw - 24px);
+  position: absolute; left: 12px; bottom: 240px; z-index: 600; width: 264px; max-width: calc(100vw - 24px);
   background: var(--panel); padding: 9px 12px 12px;
   border: 3px solid; border-color: var(--panel-lt) var(--stone-dk) var(--stone-dk) var(--panel-lt);
   opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity 0.15s, transform 0.15s;
@@ -230,5 +272,6 @@ input#time::-moz-range-thumb {
   #era-name { font-size: 21px; } #era-blurb { display: none; }
   #locate, #reset { width: 40px; height: 40px; }
   #locate { bottom: 126px; } #reset { bottom: 172px; }
-  #key-btn { bottom: 126px; }
+  #key-btn { bottom: 126px; } #list-btn { bottom: 172px; }
+  #legend { bottom: 224px; }
 }
