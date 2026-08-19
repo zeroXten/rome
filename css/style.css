@@ -104,7 +104,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; color: var(--ink);
 
 /* ---- sites list panel ---- */
 #listpanel {
-  position: absolute; z-index: 700; background: var(--panel); display: flex; flex-direction: column;
+  position: absolute; z-index: 1200; background: var(--panel); display: flex; flex-direction: column;
   border: 3px solid; border-color: var(--panel-lt) var(--stone-dk) var(--stone-dk) var(--panel-lt);
   transition: transform 0.22s ease;
 }
