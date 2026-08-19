@@ -191,7 +191,7 @@ const LABELS = [
   { text: "Capitoline",     lat: 41.8936, lng: 12.4820, era: 1, size: 11 },
   { text: "Aventine",       lat: 41.8834, lng: 12.4808, era: 2, size: 11 },
   { text: "Esquiline",      lat: 41.8968, lng: 12.4968, era: 2, size: 11 },
-  { text: "Trastevere",     lat: 41.8860, lng: 12.4688, era: 5, size: 12 },
+  { text: "Trastevere",     lat: 41.8858, lng: 12.4632, era: 5, size: 12 },
   { text: "Via Appia",      lat: 41.8748, lng: 12.5035, era: 3, size: 11, rotate: -30 },
   { text: "Tiber",          lat: 41.8826, lng: 12.4757, era: 0, size: 12, rotate: 68 },
 ];

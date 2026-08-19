@@ -254,6 +254,8 @@ input#time::-moz-range-thumb {
 .lg-row .sw { width: 16px; height: 12px; flex: 0 0 auto; }
 .lg-row .sw.river { height: 5px; background: #356fae; } .lg-row .sw.city { background: #a85e3e; }
 .lg-row .sw.hill { background: #3a6a25; } .lg-row .sw.wall { height: 6px; background: #9a9179; border-top: 2px solid #c2b99f; }
+.lg-row .sw.aqued { height: 6px; background: #b8935a; border-bottom: 2px solid #7c5c33; }
+.lg-row .sw.road { height: 5px; background: #cdb079; }
 .lg-row .sw.park { background: #5c9a31; border-top: 3px solid #2c5730; }
 
 /* ---- intro card ---- */

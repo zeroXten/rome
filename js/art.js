@@ -17,6 +17,7 @@
     grassA: "#699640", grassB: "#5f8d38", grassC: "#54812f", forest: "#3a6a25",
     wat: "#356fae", watHi: "#63a6dd", watLo: "#264f7c", bank: "#8a7448",
     st: "#c2b99f", stM: "#9a9179", stD: "#5f5946",
+    aqued: "#b8935a", aquedHi: "#d8c39a", aquedD: "#7c5c33",
     fabRoof: "#9d5c44", fabWall: "#b0997180", fabRoofD: "#7f3a24",
     road: "#cdb079", roadD: "#a5884f",
     cyA: "#2c5730", cyB: "#3f7442", trunk: "#6b4a2a",
@@ -37,10 +38,13 @@
    *  BASE TERRAIN  (one full opaque image per era, cross-faded)         *
    * ----------------------------------------------------------------- */
 
+  // Tiber traced through its real bridges (each bridge sits on the river), so the
+  // characteristic westward bend around the Campus Martius is captured.
   const RIVER = [
-    [41.9120,12.4658],[41.9075,12.4655],[41.9035,12.4665],[41.9000,12.4690],
-    [41.8965,12.4715],[41.8935,12.4745],[41.8912,12.4772],[41.8895,12.4787],
-    [41.8875,12.4792],[41.8850,12.4787],[41.8820,12.4775],[41.8780,12.4772],[41.8730,12.4778],
+    [41.9120,12.4745],[41.9083,12.4756],[41.9058,12.4744],[41.9017,12.4712], // → Ponte Sant'Angelo
+    [41.9013,12.4664],[41.8994,12.4649],[41.8975,12.4640],                    // westward bend
+    [41.8949,12.4664],[41.8925,12.4694],[41.8909,12.4757],[41.8901,12.4780],  // → Tiber Island
+    [41.8888,12.4798],[41.8860,12.4788],[41.8837,12.4765],[41.8790,12.4740],[41.8730,12.4715],
   ];
   const HILLS = [
     [41.8894,12.4875,74],[41.8931,12.4828,60],[41.8836,12.4817,80],[41.8860,12.4930,80],
@@ -53,8 +57,17 @@
     [41.8980,12.4735,175,150,8,99],[41.9010,12.4585,80,64,8,99],
   ];
   const SERVIAN = [[41.9008,12.4832],[41.9002,12.4905],[41.8972,12.4972],[41.8928,12.4982],[41.8878,12.4952],[41.8838,12.4882],[41.8828,12.4818],[41.8872,12.4802],[41.8940,12.4812]];
-  const AUR_E = [[41.9100,12.4828],[41.9082,12.4945],[41.9012,12.5038],[41.8905,12.5078],[41.8802,12.5022],[41.8748,12.4932],[41.8762,12.4832],[41.8800,12.4760],[41.8860,12.4735],[41.8935,12.4712],[41.9002,12.4692],[41.9062,12.4718]];
-  const AUR_W = [[41.9058,12.4560],[41.8995,12.4558],[41.8925,12.4638],[41.8882,12.4682],[41.8935,12.4718],[41.9012,12.4700],[41.9052,12.4638]];
+  // Aurelian circuit traced through its real gates on the land side, following the
+  // Tiber's east bank on the river side. West-bank loop encloses Trastevere/Janiculum.
+  const AUR_E = [
+    [41.9100,12.4840],[41.9089,12.4884],[41.9086,12.4975],[41.9095,12.5028], // Pincio→Porta Pia
+    [41.9067,12.5052],[41.8955,12.5113],[41.8916,12.5147],                    // Castra→Tiburtina→Maggiore
+    [41.8862,12.5064],[41.8836,12.5015],[41.8797,12.5030],[41.8762,12.5013],  // S.Giovanni→Latina→S.Sebastiano
+    [41.8730,12.4952],[41.8759,12.4808],                                      // Ardeatina→Porta S.Paolo (Pyramid)
+    [41.8745,12.4758],[41.8850,12.4790],[41.8905,12.4762],[41.8985,12.4660],  // up the river's east bank
+    [41.9045,12.4725],[41.9090,12.4785],[41.9100,12.4840],
+  ];
+  const AUR_W = [[41.8798,12.4725],[41.8835,12.4640],[41.8875,12.4588],[41.8935,12.4602],[41.8948,12.4658],[41.8930,12.4692]];
   const AQ_MARCIA = [[41.8912,12.5120],[41.8940,12.5000],[41.8955,12.4884]];
   const AQ_VIRGO = [[41.9090,12.4872],[41.9050,12.4840],[41.9012,12.4812],[41.9006,12.4790]];
   const AQ_CLAUDIA = [[41.8916,12.5145],[41.8898,12.5030],[41.8878,12.4962],[41.8886,12.4882]];
@@ -84,6 +97,20 @@
       }
     }
     const isl = pt(41.8901, 12.4780); ellF(x, isl.x, isl.y, 3, 2, C.grassB);
+  }
+
+  // Aqueduct: warm sandstone channel with little arch-piers below, so it reads
+  // distinctly from the cool-grey crenellated walls and the tan roads.
+  function drawAqueduct(x, list) {
+    const p = polyPts(list); let acc = 0;
+    for (let s = 0; s < p.length - 1; s++) {
+      const a = p[s], b = p[s + 1], steps = Math.max(1, Math.hypot(b.x - a.x, b.y - a.y));
+      for (let t = 0; t <= steps; t++) {
+        const cx = Math.round(a.x + (b.x - a.x) * t / steps), cy = Math.round(a.y + (b.y - a.y) * t / steps);
+        px(x, cx, cy - 1, 1, 3, C.aqued); px(x, cx, cy - 1, 1, 1, C.aquedHi);
+        if (++acc % 4 === 0) px(x, cx, cy + 2, 1, 2, C.aquedD);   // arch pier
+      }
+    }
   }
 
   function drawWall(x, list) {
@@ -162,9 +189,9 @@
     // roads
     thickLine(x, APPIA, 1, () => C.road);
     // aqueduct lines
-    if (era >= 3) thickLine(x, AQ_MARCIA, 0, () => C.stM);
-    if (era >= 4) thickLine(x, AQ_VIRGO, 0, () => C.st);
-    if (era >= 5) thickLine(x, AQ_CLAUDIA, 0, () => C.stM);
+    if (era >= 3) drawAqueduct(x, AQ_MARCIA);
+    if (era >= 4) drawAqueduct(x, AQ_VIRGO);
+    if (era >= 5) drawAqueduct(x, AQ_CLAUDIA);
     // (The built-up "population" texture was removed — it added too much visual
     //  noise. The city's extent is told by its buildings, walls and parks instead;
     //  the population figure lives in the readout panel.)
