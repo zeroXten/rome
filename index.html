@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Rome Through Time — an interactive history map</title>
+  <meta name="description" content="Drag through 2,700 years of Rome. Watch the city grow, monument by monument, on an illustrated map — and find yourself on it with GPS." />
+
+  <!-- Leaflet (map engine), vendored locally — no build step, no API key, no CDN dependency -->
+  <link rel="stylesheet" href="lib/leaflet/leaflet.css" />
+  <script src="lib/leaflet/leaflet.js"></script>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Title -->
+  <header id="title">
+    <h1>Rome Through Time</h1>
+    <p>2,700 years on one map</p>
+  </header>
+
+  <!-- Era readout -->
+  <aside id="readout">
+    <div class="era-head">
+      <span id="era-name">The Empire</span>
+      <span id="era-year">AD 100</span>
+    </div>
+    <div id="era-sub">AD 14–192</div>
+    <div id="era-pop">≈ 1,000,000 people</div>
+    <p id="era-blurb"></p>
+  </aside>
+
+  <!-- Reset view -->
+  <button id="reset" title="Back to Rome">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 3 2 11h2.5v9H10v-5.5h4V20h5.5v-9H22z"/></svg>
+  </button>
+
+  <!-- GPS -->
+  <button id="locate" title="Find me">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 8a4 4 0 100 8 4 4 0 000-8zm9 3h-2.06A7 7 0 0013 5.06V3h-2v2.06A7 7 0 005.06 11H3v2h2.06A7 7 0 0011 18.94V21h2v-2.06A7 7 0 0018.94 13H21v-2zM12 17a5 5 0 110-10 5 5 0 010 10z"/></svg>
+  </button>
+  <div id="locate-msg"></div>
+
+  <!-- Map key -->
+  <button id="key-btn" title="Map key">Key</button>
+  <div id="legend">
+    <button id="legend-close" aria-label="Close">×</button>
+    <h3>Map key</h3>
+    <div class="legend-group">
+      <div class="lg-title">Monuments — can you visit today?</div>
+      <div class="lg-row"><span class="dot standing"></span> Standing today — you can visit</div>
+      <div class="lg-row"><span class="dot ruin"></span> Ruins you can visit</div>
+      <div class="lg-row"><span class="dot gone"></span> Vanished — known from history</div>
+    </div>
+    <div class="legend-group">
+      <div class="lg-title">The map</div>
+      <div class="lg-row"><span class="sw river"></span> The river Tiber</div>
+      <div class="lg-row"><span class="sw city"></span> Built-up city (grows &amp; shrinks over time)</div>
+      <div class="lg-row"><span class="sw hill"></span> The seven hills</div>
+      <div class="lg-row"><span class="sw wall"></span> City walls — inner Servian, outer Aurelian</div>
+    </div>
+  </div>
+
+  <!-- Time control -->
+  <div id="control">
+    <div id="chips"></div>
+    <input id="time" type="range" min="0" max="1000" value="500" step="1" aria-label="Time slider" />
+    <div class="scale">
+      <span>753 BC</span><span>The Empire</span><span>Medieval</span><span>Today</span>
+    </div>
+  </div>
+
+  <!-- Intro card -->
+  <div id="intro">
+    <div class="card">
+      <button id="intro-close" aria-label="Close">×</button>
+      <h2>Rome Through Time</h2>
+      <p>Drag the <strong>slider</strong> at the bottom to move from the founding of Rome
+         (753 BC) to the present day. Watch the city grow, its walls expand, and its great
+         monuments rise — drawn as an old illustrated map.</p>
+      <ul>
+        <li>🖱️ <strong>Pan & zoom</strong> like any map — drag, scroll or pinch.</li>
+        <li>📍 <strong>Tap a marker</strong> to read a monument's story.</li>
+        <li>🧭 Tap the <strong>compass button</strong> to place yourself on the map by GPS.</li>
+      </ul>
+      <button id="intro-start" onclick="document.getElementById('intro').classList.add('hidden')">Explore Rome →</button>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/art.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
