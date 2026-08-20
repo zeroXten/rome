@@ -39,6 +39,32 @@ const ERAS = [
   { i: 9, name: "Modern",           sub: "1750–today",          start: 1750, end: 2025, pop: "~2,700,000", blurb: "Capital of a united Italy. The Vittoriano, grand avenues cut through the fora, and a city sprawling far beyond every ancient wall." },
 ];
 
+/* Who ruled Rome, by year (negative = BC). Each entry applies until the next one
+   begins. Used to show the ruler of the day in the readout. Co-emperors and brief
+   usurpers are flattened to the principal/most-notable ruler of each stretch. */
+const RULERS = [
+  [-753, "King Romulus"], [-715, "King Numa Pompilius"], [-673, "King Tullus Hostilius"],
+  [-642, "King Ancus Marcius"], [-616, "King Tarquinius Priscus"], [-578, "King Servius Tullius"],
+  [-534, "King Tarquin the Proud"],
+  [-509, "the Roman Republic"],
+  [-27, "Emperor Augustus"], [14, "Emperor Tiberius"], [37, "Emperor Caligula"], [41, "Emperor Claudius"],
+  [54, "Emperor Nero"], [68, "the Year of the Four Emperors"], [69, "Emperor Vespasian"], [79, "Emperor Titus"],
+  [81, "Emperor Domitian"], [96, "Emperor Nerva"], [98, "Emperor Trajan"], [117, "Emperor Hadrian"],
+  [138, "Emperor Antoninus Pius"], [161, "Emperor Marcus Aurelius"], [180, "Emperor Commodus"],
+  [193, "Emperor Septimius Severus"], [211, "Emperor Caracalla"], [217, "Emperor Macrinus"],
+  [218, "Emperor Elagabalus"], [222, "Emperor Severus Alexander"], [235, "Emperor Maximinus Thrax"],
+  [238, "Emperor Gordian III"], [244, "Emperor Philip the Arab"], [249, "Emperor Decius"],
+  [251, "Emperor Trebonianus Gallus"], [253, "Emperor Valerian"], [260, "Emperor Gallienus"],
+  [268, "Emperor Claudius Gothicus"], [270, "Emperor Aurelian"], [275, "Emperor Tacitus"],
+  [276, "Emperor Probus"], [282, "Emperor Carus"], [284, "Emperor Diocletian"], [305, "the Tetrarchy"],
+  [306, "Emperor Constantine the Great"], [337, "Emperor Constantius II"], [361, "Emperor Julian"],
+  [363, "Emperor Jovian"], [364, "Emperor Valentinian I"], [375, "Emperor Gratian"],
+  [383, "Emperor Valentinian II"], [392, "Emperor Theodosius I"], [395, "Emperor Honorius"],
+  [423, "Emperor Valentinian III"], [455, "the last Western emperors"], [475, "Emperor Romulus Augustulus"],
+  [476, "Odoacer, King of Italy"], [493, "the Ostrogothic kings"], [553, "Byzantine rule"],
+  [754, "the Papal States"], [1870, "the Kingdom of Italy"], [1946, "the Italian Republic"],
+];
+
 /* status — can you see it today?
      "standing" = substantially intact / iconic building you can visit
      "ruin"     = visitable ruins or significant remains
@@ -289,4 +315,4 @@ const LABELS = [
 ];
 
 /* Exposed for other modules (plain globals — no bundler needed). */
-window.ROME = { MAP_BOUNDS, VB, project, ERAS, MONUMENTS, LABELS };
+window.ROME = { MAP_BOUNDS, VB, project, ERAS, MONUMENTS, LABELS, RULERS };

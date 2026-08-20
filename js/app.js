@@ -4,7 +4,13 @@
    ===================================================================== */
 
 (function () {
-  const { MAP_BOUNDS, ERAS, MONUMENTS, buildBaseImages, spriteFor, SPRITE, LABELS } = window.ROME;
+  const { MAP_BOUNDS, ERAS, MONUMENTS, buildBaseImages, spriteFor, SPRITE, LABELS, RULERS } = window.ROME;
+  const rulerAt = (yr) => {
+    if (yr < RULERS[0][0]) return null;
+    let label = null;
+    for (const [from, name] of RULERS) { if (from <= yr) label = name; else break; }
+    return label;
+  };
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
   const bounds = L.latLngBounds(
@@ -166,6 +172,7 @@
   const eraName = document.getElementById("era-name");
   const eraSub = document.getElementById("era-sub");
   const eraYear = document.getElementById("era-year");
+  const eraRuler = document.getElementById("era-ruler");
   const eraPop = document.getElementById("era-pop");
   const eraBlurb = document.getElementById("era-blurb");
 
@@ -189,7 +196,10 @@
     const frac = clamp(t - k, 0, 1);
     eraName.textContent = era.name;
     eraSub.textContent = era.sub;
-    eraYear.textContent = fmtYear(lerp(era.start, era.end, frac));
+    const yr = lerp(era.start, era.end, frac);
+    eraYear.textContent = fmtYear(yr);
+    const ruler = rulerAt(yr);
+    eraRuler.textContent = ruler ? "Ruled by " + ruler : "";
     eraPop.textContent = era.pop === "declining" ? "population declining" : era.pop.replace("~", "") + " people";
     eraBlurb.textContent = era.blurb;
     document.body.dataset.era = era.i;
