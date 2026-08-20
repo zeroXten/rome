@@ -116,12 +116,17 @@
     return marker;
   });
 
+  const FADE_W = 0.45;
   function updateMarkers(t) {
     markers.forEach((mk) => {
       const op = opacityFor(mk._m.era, mk._m.out, t);
       if (op > 0.08) {
         if (!map.hasLayer(mk)) mk.addTo(map);
         mk.setOpacity(op * mk._ghost);
+        // "new" = actively fading in as you cross into its era (self-limiting: only
+        // the arrivals at the boundary you're crossing glow, never a whole era at once)
+        const appearOp = clamp((t - (mk._m.era - 1 - FADE_W)) / FADE_W, 0, 1);
+        if (mk._icon) mk._icon.classList.toggle("is-new", appearOp > 0.1 && appearOp < 0.96);
       } else if (map.hasLayer(mk)) {
         map.removeLayer(mk);
       }
