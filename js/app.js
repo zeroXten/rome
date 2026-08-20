@@ -116,7 +116,6 @@
     return marker;
   });
 
-  const FADE_W = 0.45;
   function updateMarkers(t) {
     const curEra = clamp(Math.floor(t), 0, 8) + 1;   // the era you're currently viewing
     markers.forEach((mk) => {
@@ -124,13 +123,8 @@
       if (op > 0.08) {
         if (!map.hasLayer(mk)) mk.addTo(map);
         mk.setOpacity(op * mk._ghost);
-        // era-now = a permanent, subtle marker of the sites belonging to the era in view.
-        // is-new = a stronger, transient shimmer for arrivals fading in at a boundary.
-        const appearOp = clamp((t - (mk._m.era - 1 - FADE_W)) / FADE_W, 0, 1);
-        if (mk._icon) {
-          mk._icon.classList.toggle("era-now", mk._m.era === curEra);
-          mk._icon.classList.toggle("is-new", appearOp > 0.1 && appearOp < 0.96);
-        }
+        // outline the sites that belong to the era currently in view
+        if (mk._icon) mk._icon.classList.toggle("era-now", mk._m.era === curEra);
       } else if (map.hasLayer(mk)) {
         map.removeLayer(mk);
       }
