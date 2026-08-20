@@ -203,8 +203,13 @@ input#time::-moz-range-thumb {
 .mon-ico:hover { z-index: 1000 !important; }
 .mon-ico:hover .psprite { transform: scale(1.25); }
 /* "new this era" — a soft gold glow on sites that first appear at the current slider point */
-/* "new this era" — arrivals glow gold as they fade in at an era boundary, then
-   the glow eases off (via the .psprite filter transition) once they've settled */
+/* era-now = a permanent, subtle gold underline on sites belonging to the era in view */
+.mon-ico.era-now::after {
+  content: ""; position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%);
+  width: 15px; height: 3px; background: #f2cf58; box-shadow: 0 0 3px rgba(242, 207, 88, 0.85);
+  pointer-events: none;
+}
+/* is-new = a stronger, transient shimmer for arrivals fading in at an era boundary */
 .mon-ico.is-new { z-index: 900 !important; }
 .mon-ico.is-new .psprite { filter: drop-shadow(0 0 3px rgba(242, 207, 88, 0.9)) drop-shadow(0 0 7px rgba(242, 207, 88, 0.7)); }
 
