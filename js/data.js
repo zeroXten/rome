@@ -47,6 +47,7 @@ const RULERS = [
   [-642, "King Ancus Marcius"], [-616, "King Tarquinius Priscus"], [-578, "King Servius Tullius"],
   [-534, "King Tarquin the Proud"],
   [-509, "the Roman Republic"],
+  [-49, "Dictator Julius Caesar"], [-44, "the Second Triumvirate"],
   [-27, "Emperor Augustus"], [14, "Emperor Tiberius"], [37, "Emperor Caligula"], [41, "Emperor Claudius"],
   [54, "Emperor Nero"], [68, "the Year of the Four Emperors"], [69, "Emperor Vespasian"], [79, "Emperor Titus"],
   [81, "Emperor Domitian"], [96, "Emperor Nerva"], [98, "Emperor Trajan"], [117, "Emperor Hadrian"],
